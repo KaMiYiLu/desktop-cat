@@ -2,7 +2,7 @@
 
 一只会在 Windows 桌面闲逛、舔爪、跳跃、冲刺和抱爪睡觉的猫咪。使用 C#、Windows Forms 与 GDI+ 绘制连续朝向的猫咪，并支持抓起放下、跟随鼠标和声音开关。
 
-**当前是公开前的源码候选工程，尚未确定项目许可证，也未公开发布。** 代码和素材来源核对状态见 [SOURCE-STATUS.md](SOURCE-STATUS.md)。暂时不将此目录视为已经获得开源分发授权的正式版本。
+本仓库公开提供桌面猫咪的源代码。项目许可证尚未确定，代码和素材来源核对状态见 [SOURCE-STATUS.md](SOURCE-STATUS.md)。
 
 ## 功能
 
@@ -50,7 +50,7 @@ powershell -ExecutionPolicy Bypass -File .\tools\export-source.ps1
 
 导出范围由 SOURCE-FILES.txt 明确列出，结果位于 artifacts/source；新增公开源文件时同步维护清单。此源码候选包与供普通用户运行的三文件包是两种不同产物。
 
-`.github/workflows/ci.yml` 是待接入 GitHub 的 Windows 检查流程，只构建、检查和打包，不自动发布，不需要网页或网站部署凭据。首轮基础 Windows CI 已在 GitHub runner 通过；桌面交互和音频缓冲检查另在本地验证。
+`.github/workflows/ci.yml` 是 GitHub 上的 Windows 检查流程，只构建、检查和打包，不自动发布，不需要网页或网站部署凭据。首轮基础 Windows CI 已在 GitHub runner 通过；桌面交互和音频缓冲检查另在本地验证。
 
 ## 目录
 
