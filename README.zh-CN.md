@@ -1,6 +1,6 @@
 # 桌面猫咪 / Desktop Cat
 
-[English](README.md) | **简体中文**
+[English](README.md) | **简体中文** | [日本語](README.ja.md)
 
 一只会在 Windows 桌面闲逛、舔爪、跳跃、冲刺和抱爪睡觉的猫咪。使用 C#、Windows Forms 与 GDI+ 绘制连续朝向的猫咪，并支持抓起放下、跟随鼠标和声音开关。
 

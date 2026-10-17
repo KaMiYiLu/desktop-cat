@@ -1,6 +1,6 @@
 # Desktop Cat / 桌面猫咪
 
-**English** | [简体中文](README.zh-CN.md)
+**English** | [简体中文](README.zh-CN.md) | [日本語](README.ja.md)
 
 A little cat that wanders around your Windows desktop, grooms its paws, jumps, zooms and curls up for a nap. Built with C#, Windows Forms and GDI+, with smoothly changing directions, pickup reactions, cursor following and optional sounds.
 
@@ -52,7 +52,7 @@ To export a source archive for review:
 powershell -ExecutionPolicy Bypass -File .\tools\export-source.ps1
 ```
 
-[SOURCE-FILES.txt](SOURCE-FILES.txt) explicitly lists the files included in the archive. The output is written to `artifacts/source`. Update the manifest when adding source files intended for distribution. Both language versions of this README are included. The source archive and the three-file user package serve different purposes.
+[SOURCE-FILES.txt](SOURCE-FILES.txt) explicitly lists the files included in the archive. The output is written to `artifacts/source`. Update the manifest when adding source files intended for distribution. All three language versions of this README are included. The source archive and the three-file user package serve different purposes.
 
 [The Windows CI workflow](.github/workflows/ci.yml) builds, checks and packages the application on GitHub. It does not automatically publish releases and requires no website deployment credentials. The basic Windows checks have passed on GitHub runners; desktop interaction and audio-buffer checks have also been performed locally.
 
@@ -67,6 +67,7 @@ VERSION                 Single source of the version number
 config.example.ini      Default configuration without personal settings
 README.md               English introduction and build instructions
 README.zh-CN.md         Chinese introduction and build instructions
+README.ja.md            Japanese introduction and build instructions
 THIRD-PARTY-NOTICES.md   Sound credits and source links
 SOURCE-STATUS.md         Source provenance and licensing status
 ```
