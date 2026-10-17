@@ -14,6 +14,7 @@ config.example.ini
 CONTRIBUTING.md
 docs/USER-GUIDE.txt
 README.md
+README.zh-CN.md
 SOURCE-FILES.txt
 SOURCE-STATUS.md
 src/AppBrand.cs

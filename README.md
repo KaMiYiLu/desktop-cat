@@ -1,72 +1,78 @@
-# 桌面猫咪 / Desktop Cat
+# Desktop Cat / 桌面猫咪
 
-一只会在 Windows 桌面闲逛、舔爪、跳跃、冲刺和抱爪睡觉的猫咪。使用 C#、Windows Forms 与 GDI+ 绘制连续朝向的猫咪，并支持抓起放下、跟随鼠标和声音开关。
+**English** | [简体中文](README.zh-CN.md)
 
-本仓库公开提供桌面猫咪的源代码。项目许可证尚未确定，代码和素材来源核对状态见 [SOURCE-STATUS.md](SOURCE-STATUS.md)。
+A little cat that wanders around your Windows desktop, grooms its paws, jumps, zooms and curls up for a nap. Built with C#, Windows Forms and GDI+, with smoothly changing directions, pickup reactions, cursor following and optional sounds.
 
-## 功能
+[Website & download](https://desktop-cat.aitoast.cn/) · [Report an issue](https://github.com/KaMiYiLu/desktop-cat/issues)
 
-- 左键按住猫咪可以拎起，放下后出现随机动作。
-- 闲逛、舔爪、原地跳、前进跳、跑步、冲刺、泥脚印和抱爪睡觉。
-- 行走时偶尔抖单耳或双耳，停下时有摆尾与观察鼠标的小动作。
-- 控制台可切换跟随、允许攻击鼠标、允许抓猫、声音总开关及独立脚步声。
-- 默认允许攻击鼠标；跟随和定时随机攻击关闭。抓放反应可能抽到追鼠标，可在控制台关闭。
-- 启动只显示猫咪；右键托盘图标选择“打开控制台”。按住 Esc 约 3 秒或托盘菜单退出。
-- 设置保存在程序旁 config.ini；日常运行不创建日志。
+This repository provides the application's source code. The project license has not yet been finalized; see [source and licensing status](SOURCE-STATUS.md) (Chinese). The Windows application's interface is currently in Chinese; the website supports Chinese and English.
 
-## 构建与运行
+## Features
 
-需要 Windows、PowerShell 和系统 .NET Framework 4.x C# 编译器。当前开发机可构建；Windows 各版本、高 DPI 与多屏尚未完成全面兼容性测试。本工程不依赖宣传网页、原版大鹅程序或私有服务器。
+- Hold the left mouse button on the cat to pick it up. Put it down for a random reaction.
+- Roaming, paw grooming, jumps in place, forward leaps, running, sprinting, muddy pawprints and curled-up naps.
+- Occasional single-ear or double-ear twitches while walking; tail swishes and cursor watching while idle.
+- A control panel with switches for cursor following, cursor attacks, pickup interactions, all sounds and footsteps separately.
+- Cursor attacks are allowed by default. Cursor following and periodic random attacks are off. A random reaction after pickup may trigger a cursor chase; disable it in the control panel if you prefer.
+- Startup shows only the cat. Right-click its system tray icon and choose **打开控制台** (Open Control Panel) to show the controls. Hold **Esc** for about 3 seconds, or use the tray menu, to quit.
+- Settings are saved in `config.ini` next to the application. Normal use does not create log files.
+
+## Build and run
+
+Requires Windows, PowerShell and the system .NET Framework 4.x C# compiler. The project builds on the development machine, but compatibility testing across Windows versions, high-DPI settings and multiple monitors is not yet complete. No website, original Desktop Goose executable or private server is required to build or run the application.
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\build.ps1
 .\artifacts\bin\DesktopCat-v71.exe
 ```
 
-版本号只在 [VERSION](VERSION) 维护，EXE 版本信息和发布包文件名由脚本生成。首次构建从 config.example.ini 复制配置；再次构建保留输出目录中已有的用户设置。可使用 build.ps1 的 OutputDirectory 参数选择输出目录。
+[VERSION](VERSION) is the single source of the version number. Build scripts generate the EXE version metadata and package filenames. The first build copies `config.example.ini` into the output directory; subsequent builds preserve existing user settings. Use the `OutputDirectory` parameter of `build.ps1` to choose another output directory.
 
-## 检查与用户包
+## Checks and distribution
 
 ```powershell
-# 绘制、姿态、小动作、舔爪和发布包检查
+# Rendering, poses, idle movements, grooming and package checks
 powershell -ExecutionPolicy Bypass -File .\tools\test.ps1
 
-# 有桌面环境时，加测控制台、抓放、动作完成和无日志行为
+# With an interactive desktop: controls, pickup, action completion and no-log checks
 powershell -ExecutionPolicy Bypass -File .\tools\test.ps1 -Desktop
 
-# 有音频输出设备时，加测真实音频缓冲，测试样本振幅为零
+# With an audio output device: native audio-buffer checks using silent samples
 powershell -ExecutionPolicy Bypass -File .\tools\test.ps1 -Audio
 
 powershell -ExecutionPolicy Bypass -File .\tools\package-release.ps1
 ```
 
-发布输出在 artifacts/release。用户 ZIP 里只有 DesktopCat.exe、config.ini 和使用说明.txt；SHA-256 文件在 ZIP 外。诊断命令只有显式运行时才会写测试报告，均由脚本放在 artifacts 下。
+Distribution files are written to `artifacts/release`. The user ZIP contains exactly three files: `DesktopCat.exe`, `config.ini` and `使用说明.txt` (the Chinese user guide). The SHA-256 file is kept outside the ZIP. Diagnostic commands write test reports only when explicitly run, under `artifacts`.
 
-导出供审阅的源码候选包：
+To export a source archive for review:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\tools\export-source.ps1
 ```
 
-导出范围由 SOURCE-FILES.txt 明确列出，结果位于 artifacts/source；新增公开源文件时同步维护清单。此源码候选包与供普通用户运行的三文件包是两种不同产物。
+[SOURCE-FILES.txt](SOURCE-FILES.txt) explicitly lists the files included in the archive. The output is written to `artifacts/source`. Update the manifest when adding source files intended for distribution. Both language versions of this README are included. The source archive and the three-file user package serve different purposes.
 
-`.github/workflows/ci.yml` 是 GitHub 上的 Windows 检查流程，只构建、检查和打包，不自动发布，不需要网页或网站部署凭据。首轮基础 Windows CI 已在 GitHub runner 通过；桌面交互和音频缓冲检查另在本地验证。
+[The Windows CI workflow](.github/workflows/ci.yml) builds, checks and packages the application on GitHub. It does not automatically publish releases and requires no website deployment credentials. The basic Windows checks have passed on GitHub runners; desktop interaction and audio-buffer checks have also been performed locally.
 
-## 目录
+## Repository layout
 
 ```text
-src/                    应用源码及诊断入口
-Assets/                 构建所需的猫咪图标、已选音效和文本
-tools/                  用户包与检查脚本、图标生成器源码
-docs/USER-GUIDE.txt      用户说明模板
-VERSION                 唯一版本来源
-config.example.ini      干净的默认配置
-THIRD-PARTY-NOTICES.md   第三方音效作者与来源
-SOURCE-STATUS.md         发布前来源核对与授权待办
+src/                    Application source and diagnostic entry points
+Assets/                 Cat icon, selected sounds and text needed for the build
+tools/                  Packaging, validation and icon-generation tools
+docs/USER-GUIDE.txt      User-guide template (Chinese)
+VERSION                 Single source of the version number
+config.example.ini      Default configuration without personal settings
+README.md               English introduction and build instructions
+README.zh-CN.md         Chinese introduction and build instructions
+THIRD-PARTY-NOTICES.md   Sound credits and source links
+SOURCE-STATUS.md         Source provenance and licensing status
 ```
 
-## 灵感与来源
+## Inspiration and credits
 
-受 [samperson 的 Desktop Goose](https://samperson.itch.io/desktop-goose) 启发的独立猫咪改编项目，非官方作品。本项目不声称获得原作者背书。第三方音效单独记录在 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md)，项目代码及图标的最终授权范围仍待确认。
+An independent, unofficial cat adaptation inspired by [samperson's Desktop Goose](https://samperson.itch.io/desktop-goose). No endorsement by the original creator is claimed. Third-party sounds are credited in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md); the final licensing scope for the application code and icon remains to be confirmed.
 
-问题反馈与功能建议欢迎提交到 [Issues](https://github.com/KaMiYiLu/desktop-cat/issues)。
+Bug reports and feature suggestions are welcome through [Issues](https://github.com/KaMiYiLu/desktop-cat/issues). Include the application version, the action that triggered the problem and any error message. For contributions, see [CONTRIBUTING.md](CONTRIBUTING.md) (Chinese).
