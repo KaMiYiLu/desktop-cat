@@ -69,4 +69,4 @@ SOURCE-STATUS.md         发布前来源核对与授权待办
 
 受 [samperson 的 Desktop Goose](https://samperson.itch.io/desktop-goose) 启发的独立猫咪改编项目，非官方作品。本项目不声称获得原作者背书。第三方音效单独记录在 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md)，项目代码及图标的最终授权范围仍待确认。
 
-宣传网页是独立私有项目，不在本工程、CI 或用户发布包中。当前仓库为私有候选：https://github.com/KaMiYiLu/desktop-cat 。获得访问权限后可使用仓库 Issues 反馈。
+问题反馈与功能建议欢迎提交到 [Issues](https://github.com/KaMiYiLu/desktop-cat/issues)。
