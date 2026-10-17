@@ -50,7 +50,7 @@ powershell -ExecutionPolicy Bypass -File .\tools\export-source.ps1
 
 导出范围由 SOURCE-FILES.txt 明确列出，结果位于 artifacts/source；新增公开源文件时同步维护清单。此源码候选包与供普通用户运行的三文件包是两种不同产物。
 
-`.github/workflows/ci.yml` 是待接入 GitHub 的 Windows 检查流程，只构建、检查和打包，不自动发布，不需要网页或网站部署凭据。本地验证不等同于已在 GitHub runner 验证。
+`.github/workflows/ci.yml` 是待接入 GitHub 的 Windows 检查流程，只构建、检查和打包，不自动发布，不需要网页或网站部署凭据。首轮基础 Windows CI 已在 GitHub runner 通过；桌面交互和音频缓冲检查另在本地验证。
 
 ## 目录
 
@@ -69,4 +69,4 @@ SOURCE-STATUS.md         发布前来源核对与授权待办
 
 受 [samperson 的 Desktop Goose](https://samperson.itch.io/desktop-goose) 启发的独立猫咪改编项目，非官方作品。本项目不声称获得原作者背书。第三方音效单独记录在 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md)，项目代码及图标的最终授权范围仍待确认。
 
-宣传网页是独立私有项目，不在本工程、CI 或用户发布包中。外部反馈暂未设置公开仓库地址；以后接入 GitHub Issues。
+宣传网页是独立私有项目，不在本工程、CI 或用户发布包中。当前仓库为私有候选：https://github.com/KaMiYiLu/desktop-cat 。获得访问权限后可使用仓库 Issues 反馈。
