@@ -1,0 +1,11 @@
+/artifacts/
+/config.ini
+*.user
+*.suo
+.vs/
+*.exe
+*.pdb
+*.zip
+*.tar.gz
+*.log
+logs/
