@@ -24,7 +24,7 @@ Requires Windows, PowerShell and the system .NET Framework 4.x C# compiler. The 
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\build.ps1
-.\artifacts\bin\DesktopCat-v71.exe
+.\artifacts\bin\DesktopCat-v73.exe
 ```
 
 [VERSION](VERSION) is the single source of the version number. Build scripts generate the EXE version metadata and package filenames. The first build copies `config.example.ini` into the output directory; subsequent builds preserve existing user settings. Use the `OutputDirectory` parameter of `build.ps1` to choose another output directory.

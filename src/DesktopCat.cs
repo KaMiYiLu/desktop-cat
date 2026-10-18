@@ -68,6 +68,7 @@ namespace DesktopCat
         [DllImport("user32.dll")] static extern short GetAsyncKeyState(int key);
         [DllImport("user32.dll")] static extern int GetWindowLong(IntPtr handle,int index);
         [DllImport("user32.dll")] static extern int SetWindowLong(IntPtr handle,int index,int value);
+        [DllImport("user32.dll")] static extern bool SetWindowPos(IntPtr handle,IntPtr insertAfter,int x,int y,int width,int height,uint flags);
         readonly Timer timer = new Timer();
         readonly Stopwatch clock = Stopwatch.StartNew();
         readonly Random rng = new Random();
@@ -400,6 +401,13 @@ namespace DesktopCat
             base.OnMouseCaptureChanged(e);if(!Capture && !quitting) EndGrab();
         }
         protected override bool ShowWithoutActivation { get { return true; } }
+        void MaintainTopmost()
+        {
+            // Never change activation, position, size, or mouse capture. Defer while held.
+            if(smokeOutput!=null || quitting || !Visible || !IsHandleCreated || Capture || task==CatTask.Held) return;
+            const uint SWP_NOSIZE=0x0001,SWP_NOMOVE=0x0002,SWP_NOACTIVATE=0x0010,SWP_NOOWNERZORDER=0x0200;
+            SetWindowPos(Handle,new IntPtr(-1),0,0,0,0,SWP_NOSIZE|SWP_NOMOVE|SWP_NOACTIVATE|SWP_NOOWNERZORDER);
+        }
         float RandomRange(float a,float b) { return a+(float)rng.NextDouble()*(b-a); }
         V RandomPoint() { return new V(RandomRange(65,Math.Max(66,desktopBounds.Width-65)),RandomRange(85,Math.Max(86,desktopBounds.Height-35))); }
         V SprintTarget()
@@ -499,6 +507,7 @@ namespace DesktopCat
         }
         void Tick(object sender,EventArgs args)
         {
+            MaintainTopmost();
             now=(float)clock.Elapsed.TotalSeconds*(actionSmoke?4:1); float dt=Math.Min(0.05f,now-lastTime); lastTime=now;
             if(actionSmoke && task==CatTask.Wander && actionSmokeIndex<6)
             {

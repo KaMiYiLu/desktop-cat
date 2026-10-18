@@ -24,7 +24,7 @@
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\build.ps1
-.\artifacts\bin\DesktopCat-v71.exe
+.\artifacts\bin\DesktopCat-v73.exe
 ```
 
 版本号只在 [VERSION](VERSION) 维护，EXE 版本信息和发布包文件名由脚本生成。首次构建从 config.example.ini 复制配置；再次构建保留输出目录中已有的用户设置。可使用 build.ps1 的 OutputDirectory 参数选择输出目录。
