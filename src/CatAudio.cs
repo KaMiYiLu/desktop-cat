@@ -39,7 +39,8 @@ namespace DesktopCat
         readonly Random random=new Random();
         readonly bool diagnostic;
         AudioContacts contacts=new AudioContacts();
-        WaveVoice meow,purr,leftStep,rightStep;
+        WaveVoice meow,purr,leftStep,rightStep,bite;
+        internal const float MeowGain=0.3f,BiteGain=0.24f;
         bool enabled,footstepsEnabled,failed,disposed,alternate;
         float nextMeow=35,lastMeow=-100;
         public bool Enabled {get {return enabled;}}
@@ -64,8 +65,9 @@ namespace DesktopCat
             if(meow!=null) return true;
             try
             {
-                meow=new WaveVoice("meow",0.3f);purr=new WaveVoice("purr",0.12f);
+                meow=new WaveVoice("meow",MeowGain);purr=new WaveVoice("purr",0.12f);
                 leftStep=new WaveVoice("step",0.035f);rightStep=new WaveVoice("step",0.035f);
+                bite=new WaveVoice("bite",BiteGain);
                 return true;
             }
             catch(Exception) {Disable();return false;}
@@ -78,6 +80,12 @@ namespace DesktopCat
         {
             if(now-lastMeow<4 || !Ready()) return;
             try {meow.Play(false);lastMeow=now;nextMeow=now+35+(float)random.NextDouble()*30;}
+            catch(Exception) {Disable();}
+        }
+        public void Bite()
+        {
+            if(!Ready()) return;
+            try {bite.Play(false);}
             catch(Exception) {Disable();}
         }
         public void TaskChanged(CatTask next,float now)
@@ -109,6 +117,7 @@ namespace DesktopCat
             {
                 if(meow!=null) meow.Stop();if(purr!=null) purr.Stop();
                 if(leftStep!=null) leftStep.Stop();if(rightStep!=null) rightStep.Stop();
+                if(bite!=null) bite.Stop();
             }
             catch(Exception) {Disable();}
         }
@@ -116,7 +125,8 @@ namespace DesktopCat
         {
             if(meow!=null) meow.Dispose();if(purr!=null) purr.Dispose();
             if(leftStep!=null) leftStep.Dispose();if(rightStep!=null) rightStep.Dispose();
-            meow=purr=leftStep=rightStep=null;
+            if(bite!=null) bite.Dispose();
+            meow=purr=leftStep=rightStep=bite=null;
         }
         public void Dispose() {if(disposed) return;disposed=true;DisposeVoices();}
     }

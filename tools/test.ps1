@@ -15,7 +15,7 @@ function Invoke-Check([string]$Mode, [string]$ResultPath) {
     if (-not $report.StartsWith('PASS')) { throw "Check failed: $Mode" }
     Write-Output $report
 }
-foreach ($mode in @('--verify', '--verify-lick', '--verify-idle')) {
+foreach ($mode in @('--verify', '--verify-lick', '--verify-idle', '--verify-audio-assets')) {
     Invoke-Check $mode (Join-Path $results ($mode.TrimStart('-') + '.txt'))
 }
 if ($Desktop) {

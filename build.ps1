@@ -23,6 +23,7 @@ $arguments = @(
     "/resource:$PSScriptRoot/Assets/Sounds/meow.wav,DesktopCat.meow.wav",
     "/resource:$PSScriptRoot/Assets/Sounds/purr.wav,DesktopCat.purr.wav",
     "/resource:$PSScriptRoot/Assets/Sounds/step.wav,DesktopCat.step.wav",
+    "/resource:$PSScriptRoot/Assets/Sounds/bite.wav,DesktopCat.bite.wav",
     $versionSource
 )
 $sources = @(Get-ChildItem -LiteralPath (Join-Path $PSScriptRoot 'src') -Filter '*.cs' -File | Sort-Object Name | ForEach-Object FullName)

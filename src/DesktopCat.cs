@@ -75,7 +75,6 @@ namespace DesktopCat
         readonly IdleMotion idle=new IdleMotion(Environment.TickCount);
         readonly Settings settings;
         readonly CatAudio audio;
-        readonly NotifyIcon tray;
         readonly MudTrail mud = new MudTrail();
         readonly List<Form> gifts = new List<Form>();
         readonly Queue<CatTask> deck = new Queue<CatTask>();
@@ -85,6 +84,7 @@ namespace DesktopCat
         V leapOrigin,leapEnd;
         float lastTime, now, heading = 0, phase, deadline, pauseUntil, quitHeld;
         int stage; bool mouseWasDown, dragging, quitting;
+        bool consoleShortcutUsed,rightWasDown;
         Form gift;
         DebugWindow debug;
         bool followMouse;
@@ -129,24 +129,6 @@ namespace DesktopCat
             if(smokeOutput != null) { settings.CanAttackMouse=false;followMouse=false;deadline=100;Shown+=delegate {Hide();}; }
             if(idleSmoke) {pauseUntil=100;nextIdleAction=100;target=position;}
             if(checkDebug) Shown+=delegate {CheckDebugControls(smokeOutput);Close();};
-            ContextMenuStrip menu = new ContextMenuStrip();
-            menu.Items.Add("打开控制台",null,delegate {ShowDebug();});
-            if(settings.CanDragWindows)
-            {
-                menu.Items.Add("叼一张便签",null,delegate { Start(CatTask.Note); });
-                menu.Items.Add("叼一张图片",null,delegate { Start(CatTask.Picture); });
-            }
-            menu.Items.Add("追鼠标",null,delegate { if(settings.CanAttackMouse) Start(CatTask.Mouse); });
-            menu.Items.Add(new ToolStripSeparator());
-            menu.Items.Add("舔爪子",null,delegate { Start(CatTask.Lick); });
-            menu.Items.Add("原地跳跃",null,delegate { Start(CatTask.Jump); });
-            menu.Items.Add("前进跳跃",null,delegate { Start(CatTask.Leap); });
-            menu.Items.Add("跑步",null,delegate { Start(CatTask.Run); });
-            menu.Items.Add("冲刺",null,delegate { Start(CatTask.Sprint); });
-            menu.Items.Add("睡觉",null,delegate { Start(CatTask.Sleep); });
-            menu.Items.Add("叫一声",null,delegate {audio.Meow(now);});
-            menu.Items.Add("退出猫咪",null,delegate { Close(); });
-            tray = new NotifyIcon {Icon=AppBrand.Icon,Text="Desktop Cat · 按住 ESC 退出",ContextMenuStrip=menu,Visible=true};
             timer.Interval = 16; timer.Tick += Tick; timer.Start();
             if(smokeOutput==null)
             {
@@ -247,7 +229,41 @@ namespace DesktopCat
                 {panel.DrawToBitmap(image,new Rectangle(0,0,image.Width,image.Height));image.Save(Path.ChangeExtension(resultPath,"png"));}
                 panel.Close();
             }
-            File.WriteAllText(resultPath,"PASS action buttons / follow-attack toggles / pickup-offset-drop-land-reaction-disable / 60-20-20 leap counts / 1-2-3 jump chains / interruption and edge turn / sleep-stop-wake-follow-resume / native viewport and mud expiry / saved toggles");
+            CheckConsoleShortcut();
+            File.WriteAllText(resultPath,"PASS action buttons / follow-attack toggles / pickup-offset-drop-land-reaction-disable / 60-20-20 leap counts / 1-2-3 jump chains / interruption and edge turn / sleep-stop-wake-follow-resume / native viewport and mud expiry / saved toggles / Esc-right cat-only shortcut, outside-click and held-button rejection, reopen, restore, disabled-pickup access and exit suppression");
+        }
+        void CheckConsoleShortcut()
+        {
+            if(ShowInTaskbar || debug!=null) throw new Exception("Unexpected startup taskbar button or console");
+            if(ProcessControlInput(true,true,false,0.05f) || debug!=null) throw new Exception("Esc-right outside cat opened console");
+            if(ProcessControlInput(true,true,true,0.05f) || debug!=null) throw new Exception("Moving held right button over cat opened console");
+            ProcessControlInput(false,false,true,0.05f);
+            if(ProcessControlInput(false,true,true,0.05f) || debug!=null) throw new Exception("Right-click alone opened console");
+            for(int i=0;i<58;i++)
+                if(ProcessControlInput(true,false,true,0.05f)) throw new Exception("Esc exited before three seconds");
+            if(ProcessControlInput(true,true,true,0.05f) || debug==null || !debug.Visible || quitHeld!=0)
+                throw new Exception("Esc-right did not open console and cancel exit");
+            DebugWindow opened=debug;
+            for(int i=0;i<80;i++)
+                if(ProcessControlInput(true,i<40,true,0.05f) || debug!=opened || quitHeld!=0)
+                    throw new Exception("Console shortcut repeated or held Esc requested exit");
+            ProcessControlInput(false,false,true,0.05f);
+            debug.WindowState=FormWindowState.Minimized;
+            ProcessControlInput(true,true,true,0.05f);
+            if(debug!=opened || debug.WindowState!=FormWindowState.Normal) throw new Exception("Shortcut did not restore existing console");
+            debug.Close();
+            for(int i=0;i<80;i++)
+                if(ProcessControlInput(true,false,true,0.05f) || debug!=null) throw new Exception("Closing console lost Esc suppression");
+            ProcessControlInput(false,false,true,0.05f);
+            SetPickUp(false);ProcessControlInput(true,true,true,0.05f);
+            if(debug==null || !debug.Visible) throw new Exception("Disabled pickup blocked console access");
+            debug.Close();SetPickUp(true);ProcessControlInput(false,false,true,0.05f);
+            for(int i=0;i<58;i++)
+                if(ProcessControlInput(true,false,true,0.05f)) throw new Exception("Esc exited before three seconds after shortcut");
+            bool exitRequested=false;
+            for(int i=0;i<4;i++) exitRequested|=ProcessControlInput(true,false,true,0.05f);
+            if(!exitRequested) throw new Exception("Long Esc no longer exits");
+            ProcessControlInput(false,false,true,0.05f);
         }
         void CheckActionChains()
         {
@@ -305,12 +321,26 @@ namespace DesktopCat
         }
         void ShowDebug()
         {
+            if(task==CatTask.Mouse) Start(CatTask.Wander);
             if(debug==null || debug.IsDisposed)
             {
                 debug=new DebugWindow(Start,SetFollow,SetAttack,SetPickUp,DebugStatus,followMouse,settings.CanAttackMouse,settings.CanPickUp,PerformIdle,SetSound,settings.SoundEnabled,delegate {audio.Meow(now);},SetFootsteps,settings.FootstepsEnabled);
                 debug.FormClosed+=delegate {debug=null;};debug.Show();
             }
-            else {debug.Show();debug.Activate();}
+            else {debug.WindowState=FormWindowState.Normal;debug.Show();debug.Activate();}
+        }
+        bool ProcessControlInput(bool escapeDown,bool rightDown,bool overCat,float dt)
+        {
+            bool rightPressed=rightDown && !rightWasDown;rightWasDown=rightDown;
+            if(!escapeDown) {quitHeld=0;consoleShortcutUsed=false;return false;}
+            if(rightPressed && overCat && !consoleShortcutUsed)
+            {
+                consoleShortcutUsed=true;quitHeld=0;ShowDebug();
+            }
+            // A console chord consumes this entire Esc hold, including after
+            // the right button or console is released. Fresh Esc holds can quit.
+            if(consoleShortcutUsed) {quitHeld=0;return false;}
+            quitHeld+=dt;return quitHeld>=3;
         }
         string DebugStatus()
         {
@@ -371,6 +401,13 @@ namespace DesktopCat
         {
             V drawn=position+new V(0,-CurrentPose.Lift);
             return mouse.X>drawn.X-55 && mouse.X<drawn.X+55 && mouse.Y>drawn.Y-88 && mouse.Y<drawn.Y+10;
+        }
+        bool ConsoleHitTest(V mouse)
+        {
+            if(!OverCat(mouse) || surface==null) return false;
+            int x=(int)Math.Floor(mouse.X-renderOrigin.X),y=(int)Math.Floor(mouse.Y-renderOrigin.Y);
+            return x>=0 && y>=0 && x<surface.Bitmap.Width && y<surface.Bitmap.Height
+                && surface.Bitmap.GetPixel(x,y).A>=230;
         }
         void BeginGrab(V mouse)
         {
@@ -518,8 +555,8 @@ namespace DesktopCat
             bool overDebug=debug!=null && debug.Visible && debug.Bounds.Contains(Cursor.Position);
             if(down && !mouseWasDown && !overDebug && !settings.CanPickUp && settings.CanAttackMouse && (MousePoint()-position).Length<40) Start(CatTask.Mouse);
             mouseWasDown=down;
-            quitHeld=smokeOutput==null && (GetAsyncKeyState(27)&0x8000)!=0 ? quitHeld+dt : 0;
-            if(quitHeld>=3) { Close();return; }
+            if(smokeOutput==null && ProcessControlInput((GetAsyncKeyState(27)&0x8000)!=0,
+                (GetAsyncKeyState(2)&0x8000)!=0,!overDebug && ConsoleHitTest(MousePoint()),dt)) { Close();return; }
             float speed=80,accel=1300; bool paused=false;
             if(task==CatTask.Held && !down && smokeOutput==null) EndGrab();
             if(task==CatTask.Follow)
@@ -585,7 +622,7 @@ namespace DesktopCat
                 if(stage==0)
                 {
                     target=MousePoint()-(Mouth-position);
-                    if((MousePoint()-Mouth).Length<15) { stage=1;dragging=true;target=RandomPoint();deadline=now+4; }
+                    if((MousePoint()-Mouth).Length<15) { stage=1;dragging=true;target=RandomPoint();deadline=now+4;audio.Bite(); }
                     else if(now>deadline) Start(CatTask.Wander);
                 }
                 if(stage==1)
@@ -734,7 +771,7 @@ namespace DesktopCat
             
             if(debug!=null && !debug.IsDisposed) debug.Close();
             foreach(Form f in gifts.ToArray()) f.Close();
-            tray.Visible=false;tray.ContextMenuStrip.Dispose();tray.Dispose();base.OnFormClosed(e);
+            base.OnFormClosed(e);
         }
     }
     static class Program
@@ -753,6 +790,7 @@ namespace DesktopCat
         static void Run(string[] args)
         {
             if(args.Length==2 && args[0]=="--audio-check") {AudioCheck.Run(args[1]);return;}
+            if(args.Length==2 && args[0]=="--verify-audio-assets") {AudioCheck.VerifyAssets(args[1]);return;}
             if(args.Length==2 && args[0]=="--mud-check")
             {
                 for(int i=0;i<16;i++)

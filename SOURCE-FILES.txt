@@ -5,6 +5,7 @@
 Assets/Branding/DesktopCat.ico
 Assets/Branding/DesktopCat.png
 Assets/Sounds/meow.wav
+Assets/Sounds/bite.wav
 Assets/Sounds/purr.wav
 Assets/Sounds/step.wav
 Assets/Text/NotepadMessages/hello.txt

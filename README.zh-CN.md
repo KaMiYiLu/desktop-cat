@@ -15,7 +15,7 @@
 - 行走时偶尔抖单耳或双耳，停下时有摆尾与观察鼠标的小动作。
 - 控制台可切换跟随、允许攻击鼠标、允许抓猫、声音总开关及独立脚步声。
 - 默认允许攻击鼠标；跟随和定时随机攻击关闭。抓放反应可能抽到追鼠标，可在控制台关闭。
-- 启动只显示猫咪；右键托盘图标选择“打开控制台”。按住 Esc 约 3 秒或托盘菜单退出。
+- 启动只显示猫咪，不显示系统托盘图标；按住 Esc 并右键点击猫咪打开控制台。使用组合键后先松开 Esc，再单独长按约 3 秒退出。
 - 设置保存在程序旁 config.ini；日常运行不创建日志。
 
 ## 构建与运行
@@ -24,7 +24,7 @@
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\build.ps1
-.\artifacts\bin\DesktopCat-v74.exe
+.\artifacts\bin\DesktopCat-v75.exe
 ```
 
 版本号只在 [VERSION](VERSION) 维护，EXE 版本信息和发布包文件名由脚本生成。首次构建从 config.example.ini 复制配置；再次构建保留输出目录中已有的用户设置。可使用 build.ps1 的 OutputDirectory 参数选择输出目录。

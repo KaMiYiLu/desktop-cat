@@ -19,3 +19,11 @@
 备注：原录音是单步拟音，作为猫咪的风格化脚步使用。
 
 CC0 说明：https://creativecommons.org/publicdomain/zero/1.0/
+
+## 咬鼠标音效
+
+文件：Assets/Sounds/bite.wav
+来源：Desktop Goose v0.3 的 Assets/Sound/NotEmbedded/BITE.mp3。
+原作品作者：samperson；原作页面：https://samperson.itch.io/desktop-goose 。
+本素材不属于上文三段 CC0 音效，未在本项目中另行授予开放许可证。
+处理：保留原音高及速度，转为单声道 44.1 kHz PCM16 WAV，并降低振幅。运行时增益为 0.24（猫叫为 0.30），最终峰值和 RMS 均低于猫叫。

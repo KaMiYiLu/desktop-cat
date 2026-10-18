@@ -15,7 +15,7 @@ This repository provides the application's source code. The project license has 
 - Occasional single-ear or double-ear twitches while walking; tail swishes and cursor watching while idle.
 - A control panel with switches for cursor following, cursor attacks, pickup interactions, all sounds and footsteps separately.
 - Cursor attacks are allowed by default. Cursor following and periodic random attacks are off. A random reaction after pickup may trigger a cursor chase; disable it in the control panel if you prefer.
-- Startup shows only the cat. Right-click its system tray icon and choose **打开控制台** (Open Control Panel) to show the controls. Hold **Esc** for about 3 seconds, or use the tray menu, to quit.
+- Startup shows only the cat, with no system tray icon. Hold **Esc** and right-click the cat to open or restore the control panel. After using the shortcut, release Esc, then hold it again for about 3 seconds to quit.
 - Settings are saved in `config.ini` next to the application. Normal use does not create log files.
 
 ## Build and run
@@ -24,7 +24,7 @@ Requires Windows, PowerShell and the system .NET Framework 4.x C# compiler. The 
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\build.ps1
-.\artifacts\bin\DesktopCat-v74.exe
+.\artifacts\bin\DesktopCat-v75.exe
 ```
 
 [VERSION](VERSION) is the single source of the version number. Build scripts generate the EXE version metadata and package filenames. The first build copies `config.example.ini` into the output directory; subsequent builds preserve existing user settings. Use the `OutputDirectory` parameter of `build.ps1` to choose another output directory.
