@@ -24,7 +24,7 @@ Windows、PowerShell、システムの .NET Framework 4.x C# コンパイラが�
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\build.ps1
-.\artifacts\bin\DesktopCat-v73.exe
+.\artifacts\bin\DesktopCat-v74.exe
 ```
 
 バージョン番号は [VERSION](VERSION) で一元管理しています。EXE のバージョン情報と配布ファイル名はスクリプトが生成します。初回ビルドでは `config.example.ini` から設定をコピーし、次回以降は出力先にある既存の設定を保持します。出力先を変更する場合は、`build.ps1` の `OutputDirectory` パラメーターを指定してください。

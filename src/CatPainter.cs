@@ -405,36 +405,18 @@ namespace DesktopCat
         {
             Draw(g,position,angle,phase,moving,time,new CatPose());
         }
-        static void SoftShadow(Graphics g,GraphicsPath path,int alpha)
+        static void GroundShadow(Graphics g,CatPose pose)
         {
-            using(PathGradientBrush shade=new PathGradientBrush(path))
-            {
-                shade.CenterColor=Color.FromArgb(alpha,42,43,48);
-                shade.SurroundColors=new Color[]{Color.FromArgb(0,42,43,48)};
-                shade.FocusScales=new PointF(0.18f,0.18f);
-                g.FillPath(shade,path);
-            }
-        }
-        static void GroundShadow(Graphics g,float angle,CatPose pose)
-        {
-            float lift=Math.Max(0,pose.Lift),spread=1+lift*0.006f;
-            float c=(float)Math.Cos(angle),s=(float)Math.Sin(angle);
-            int alpha=(int)(48/(1+lift*0.035f));
-            using(GraphicsPath footprint=new GraphicsPath())
-            using(Matrix ground=new Matrix(32*spread*c,20.8f*spread*s,-21*spread*s,13.65f*spread*c,0,4))
-            {
-                footprint.AddEllipse(-1,-1,2,2);footprint.Transform(ground);
-                SoftShadow(g,footprint,alpha);
-            }
-            // Small contact shadows stay at the grounded paws; there are none
-            // while the cat is carried or in flight.
-            if(lift<0.5f && CatGait.Grounded(pose))
-            for(int i=0;i<4;i++)
-            {
-                V p=CatGait.ProjectGround(i<2?-16:16,i%2==0?-10:10,angle);
-                using(GraphicsPath contact=new GraphicsPath())
-                {contact.AddEllipse(p.X-6,p.Y-2,12,5);SoftShadow(g,contact,24);}
-            }
+            // A single stippled oval stays flat on the desktop as the cat turns.
+            // Height only changes its size and opacity, never its ground position.
+            float lift=Math.Max(0,pose.Lift);
+            float scale=1-Math.Min(lift*0.003f,0.22f);
+            int alpha=(int)(200/(1+lift*0.025f));
+            float radiusX=(pose.Kind==PoseKind.Sleep?34:30)*scale;
+            float radiusY=15*scale;
+            using(HatchBrush shade=new HatchBrush(HatchStyle.Percent25,
+                Color.FromArgb(alpha,110,110,110),Color.Transparent))
+                g.FillEllipse(shade,-radiusX,4-radiusY,radiusX*2,radiusY*2);
         }
         static void Lick(Graphics g,Brush fur,Brush pink,Pen edge,Pen ink,Pen toes,float time,CatPose pose)
         {
@@ -571,10 +553,10 @@ namespace DesktopCat
                 bool rearFacing=!FaceVisible(angle);
                 if(pose.Kind==PoseKind.Sleep)
                 {
-                    GroundShadow(g,0,pose);Sleep(g,fur,pink,edge,ink,toes,pose,angle);
+                    GroundShadow(g,pose);Sleep(g,fur,pink,edge,ink,toes,pose,angle);
                     g.Restore(saved);return;
                 }
-                GroundShadow(g,angle,pose);
+                GroundShadow(g,pose);
                 g.TranslateTransform(0,-pose.Lift);
                 if(pose.Kind==PoseKind.Held)
                 {
