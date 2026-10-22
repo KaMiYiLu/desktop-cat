@@ -17,6 +17,7 @@ This repository provides the application's source code. The project license has 
 - Cursor attacks are allowed by default. Cursor following and periodic random attacks are off. A random reaction after pickup may trigger a cursor chase; disable it in the control panel if you prefer.
 - Startup shows only the cat, with no system tray icon. Hold **Esc** and right-click the cat to open or restore the control panel. After using the shortcut, release Esc, then hold it again for about 3 seconds to quit.
 - Settings are saved in `config.ini` next to the application. Normal use does not create log files.
+- Logon startup is enabled on the first normal launch, without administrator rights. Turn it off in the compact control panel to remember your choice. When enabled, launching a newer copy refreshes the startup path; diagnostics never register startup.
 
 ## Build and run
 
@@ -24,7 +25,7 @@ Requires Windows, PowerShell and the system .NET Framework 4.x C# compiler. The 
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\build.ps1
-.\artifacts\bin\DesktopCat-v75.exe
+.\artifacts\bin\DesktopCat-v78.exe
 ```
 
 [VERSION](VERSION) is the single source of the version number. Build scripts generate the EXE version metadata and package filenames. The first build copies `config.example.ini` into the output directory; subsequent builds preserve existing user settings. Use the `OutputDirectory` parameter of `build.ps1` to choose another output directory.

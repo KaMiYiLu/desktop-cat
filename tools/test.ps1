@@ -1,4 +1,4 @@
-﻿param([switch]$Desktop, [switch]$Audio)
+param([switch]$Desktop, [switch]$Audio)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 $release = (Get-Content -LiteralPath (Join-Path $root 'VERSION') -Raw).Trim()
@@ -19,7 +19,7 @@ foreach ($mode in @('--verify', '--verify-lick', '--verify-idle', '--verify-audi
     Invoke-Check $mode (Join-Path $results ($mode.TrimStart('-') + '.txt'))
 }
 if ($Desktop) {
-    foreach ($mode in @('--debug-check', '--smoke-actions')) {
+    foreach ($mode in @('--startup-check', '--debug-check', '--smoke-actions')) {
         Invoke-Check $mode (Join-Path $results ($mode.TrimStart('-') + '.txt'))
     }
     # Check new process launches, failure cleanup, and absence of automatic logs.

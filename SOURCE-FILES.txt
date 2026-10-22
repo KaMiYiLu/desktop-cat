@@ -39,3 +39,5 @@ tools/GenerateIcon.cs
 tools/package-release.ps1
 tools/test.ps1
 VERSION
+src/StartupCheck.cs
+src/StartupRegistration.cs

@@ -87,6 +87,7 @@ namespace DesktopCat
         bool consoleShortcutUsed,rightWasDown;
         Form gift;
         DebugWindow debug;
+        readonly StartupRegistration startup=new StartupRegistration();
         bool followMouse;
         bool diagnosticPaintFault;
         LayeredSurface surface;
@@ -324,10 +325,32 @@ namespace DesktopCat
             if(task==CatTask.Mouse) Start(CatTask.Wander);
             if(debug==null || debug.IsDisposed)
             {
-                debug=new DebugWindow(Start,SetFollow,SetAttack,SetPickUp,DebugStatus,followMouse,settings.CanAttackMouse,settings.CanPickUp,PerformIdle,SetSound,settings.SoundEnabled,delegate {audio.Meow(now);},SetFootsteps,settings.FootstepsEnabled);
+                debug=new DebugWindow(Start,SetFollow,SetAttack,SetPickUp,DebugStatus,followMouse,settings.CanAttackMouse,settings.CanPickUp,PerformIdle,SetSound,settings.SoundEnabled,delegate {audio.Meow(now);},SetFootsteps,settings.FootstepsEnabled,SetStartup,StartupEnabled());
                 debug.FormClosed+=delegate {debug=null;};debug.Show();
             }
             else {debug.WindowState=FormWindowState.Normal;debug.Show();debug.Activate();}
+        }
+        bool StartupEnabled()
+        {
+            try {return startup.Enabled;}
+            catch(System.Security.SecurityException) {return false;}
+            catch(UnauthorizedAccessException) {return false;}
+            catch(IOException) {return false;}
+        }
+        internal void ApplyDefaultStartup()
+        {
+            try {startup.ApplyDefault();}
+            catch(Exception error)
+            {MessageBox.Show("无法自动设置开机自启动，可在控制台重试：\n"+error.Message,"猫咪控制台",MessageBoxButtons.OK,MessageBoxIcon.Warning);}
+        }
+        bool SetStartup(bool enabled)
+        {
+            try {startup.SetEnabled(enabled);return startup.Enabled;}
+            catch(Exception error)
+            {
+                MessageBox.Show(debug,"无法更改开机自启动设置：\n"+error.Message,"猫咪控制台",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                return StartupEnabled();
+            }
         }
         bool ProcessControlInput(bool escapeDown,bool rightDown,bool overCat,float dt)
         {
@@ -789,6 +812,8 @@ namespace DesktopCat
         }
         static void Run(string[] args)
         {
+            if(args.Length==2 && args[0]=="--startup-check")
+            {Application.EnableVisualStyles();Application.SetCompatibleTextRenderingDefault(false);StartupCheck.Run(args[1]);return;}
             if(args.Length==2 && args[0]=="--audio-check") {AudioCheck.Run(args[1]);return;}
             if(args.Length==2 && args[0]=="--verify-audio-assets") {AudioCheck.VerifyAssets(args[1]);return;}
             if(args.Length==2 && args[0]=="--mud-check")
@@ -1202,12 +1227,9 @@ namespace DesktopCat
                 File.WriteAllText(Path.Combine(root,"config.ini"),"Task_CanAttackMouse=False\nFollowMouse=False\nTask_CanDragWindows=False\n");
             }
             CatWindow window=new CatWindow(root,smoke,args.Length==2 && args[0]=="--smoke-actions",debugCheck,args.Length==2 && args[0]=="--smoke-idle");
+            if(args.Length==0 || (args.Length==1 && args[0]=="--autostart")) window.ApplyDefaultStartup();
             if(paintCheck) window.Shown+=delegate {window.TestPaintCrash();};
             Application.Run(window);
         }
     }
 }
-
-
-
-

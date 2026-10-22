@@ -17,6 +17,7 @@
 - 默认允许攻击鼠标；跟随和定时随机攻击关闭。抓放反应可能抽到追鼠标，可在控制台关闭。
 - 启动只显示猫咪，不显示系统托盘图标；按住 Esc 并右键点击猫咪打开控制台。使用组合键后先松开 Esc，再单独长按约 3 秒退出。
 - 设置保存在程序旁 config.ini；日常运行不创建日志。
+- 首次正常运行默认开启登录 Windows 后自启动，无需管理员权限；在紧凑控制台取消后会记住关闭选择。已开启时，运行新版会刷新启动路径；诊断命令不会注册自启动。
 
 ## 构建与运行
 
@@ -24,7 +25,7 @@
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\build.ps1
-.\artifacts\bin\DesktopCat-v75.exe
+.\artifacts\bin\DesktopCat-v78.exe
 ```
 
 版本号只在 [VERSION](VERSION) 维护，EXE 版本信息和发布包文件名由脚本生成。首次构建从 config.example.ini 复制配置；再次构建保留输出目录中已有的用户设置。可使用 build.ps1 的 OutputDirectory 参数选择输出目录。
